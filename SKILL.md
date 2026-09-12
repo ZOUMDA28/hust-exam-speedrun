@@ -1,20 +1,27 @@
 ---
 name: hust-exam-speedrun
-description: "华科课程考试速通复习资料生成器：从零基础到 80+ 分。当用户几天内要考试、要求'速通/速成/抱佛脚'复习、把课程资料（课件 PDF、作业解答 docx、样卷、总复习提纲）整理成讲义或飞书知识库时触发。覆盖完整工作流：调研样卷确定题型 → 按题型写零基础讲义（必背公式/做题套路/例题精讲/作业索引）→ 搭建飞书知识库并开放分享。适用于任何一门有历年样卷和作业答案的课程。"
+description: "华科课程考试速通复习资料生成器：从零基础到 80+ 分。当用户几天内要考试、要求'速通/速成/抱佛脚/零基础'复习、或要求'以后做资料只生成html'时触发。**唯一交付物：单文件交互式 HTML 讲义**（KaTeX 实时公式 + 5 种语义块 + 可折叠答案 + 侧边锚点导航 + 顶部阅读进度），按题型套路组织。学习路线图/必背公式/解题套路/例题精讲/作业详解/速记口诀——一份 HTML 自带完整复习链路。覆盖工作流：调研样卷确定题型 → 写 HTML 讲义 → 本地保存供浏览器打开 → 可选上传飞书作为附件共享。适用于任何一门有样卷和作业答案的课程。"
 agent_created: true
 ---
 
-# 华科考试速通复习资料生成（讲义 + 飞书知识库）
+# 华科考试速通复习资料生成（单文件 HTML 讲义）
 
 ## 目标
 
-为一名零基础、考前 1~3 天的学生，产出「按题型套路组织」的速通讲义，并建成可分享的飞书知识库，目标 80+ 分。全程以最快路径执行，不追求系统性、只追求拿分。
+为一名零基础、考前 1~3 天的学生，产出「按题型套路组织」的单文件交互式 HTML 讲义，目标 80+ 分。**唯一交付物是 HTML**，不再生成 markdown/飞书云文档——HTML 在任何设备都能用、能离线、可邮件、可发U盘、可挂飞书，全程以最快路径执行，不追求系统性、只追求拿分。
 
 ## 总流程（按序执行）
 
 ```
-调研资料(≤30min) → 问4个决策问题 → 写讲义markdown → 搭飞书知识库 → 验证公式渲染 → 开放分享 → 交付链接
+调研资料(≤30min) → 问4个决策问题 → 写HTML讲义（唯一交付物） → 本地保存 → 可选上传飞书附件
 ```
+
+**为什么唯一交付物是 HTML**：
+- **零依赖**：发邮件、传U盘、存手机、挂飞书，任何方式都能用
+- **离线可用**：KaTeX 资源 + 图片可内联 base64，断网照常复习
+- **碎片时间友好**：通勤、食堂、等人都能"刷"，比飞书文档打开快
+- **公式友好**：KaTeX 渲染 LaTeX 公式比任何在线文档都漂亮
+- **可折叠答案**：先做题，看不下去再展开，对照练习
 
 ## 第一阶段：资料调研
 
@@ -41,95 +48,168 @@ agent_created: true
 
 用户如果催"快点"，跳过提问直接按推荐项执行。
 
-## 第三阶段：撰写讲义 markdown
+## 第三阶段：撰写讲义 HTML（唯一交付物）
 
-统一放在 `.workbuddy/wiki_md/` 目录，文件名用 `数字-名称.md` 控制排序。**推荐知识库结构**（经两门课实战验证，参考优秀范本）：
+### 输出位置与命名
+
+每份讲义单独一个 HTML 文件，文件名按章节/题型命名：
 
 ```
-🚀 复习路线图（必看）        ← 首页：callout考试信息 + 考点优先级表(⭐+分值+对应讲义) + 时间表 + 80+策略 + 目录
-├── 📚 零基础入门与公式速查   ← 零基础预备 / 公式速查总表 / 学长笔记(如有md原件直接import) / 零基础详解Part系列 / 手把手计算细节
-├── ✍️ 题型训练与加练        ← 题型一~N讲义 / 加练例题册 / 💯样卷完整手写详解(含标准答案图) / 样卷自测指南
-└── 📎 作业答案与原始资料     ← 作业答案Word原文件 / 作业答案PDF(如有) / 样卷原图 / 总复习PPT/PDF
+.workbuddy/wiki_html/
+├── 00_复习路线图.html                  ← 首页（提纲时间表）
+├── 01_第1章_信号与系统基础.html          ← 零基础入门（必须最先写，按周次的教程或按章节）
+├── 02_第2章_连续系统时域分析.html
+├── ...每章一章
+├── 10_加练例题册_每题型超详解.html
+└── 11_样卷_7题完整手写详解.html
 ```
 
-- 分区容器节点用 emoji 开头命名（📚✍️📎），内部讲义按内容归位。容器用 `wiki +node-create` 创建，子节点用 `wiki +move --node-token X --target-parent-token Y` 挂进去。
-- **考点优先级表是路线图灵魂**：每行=优先级(⭐⭐⭐) + 考点 + 分值 + 对应讲义名，让用户一眼知道 80% 时间投哪里。
-- 复习时间表精确到半天/时段，最后一段永远是"考前早晨只看公式表"。
+如要把讲义上传分享（同学/老师），**只上传 HTML 原文件**（`drive +upload` 即可，飞书会保留原文件名直接打开），不做 markdown 转换、不做飞书云文档。
 
-### 题型讲义统一模板
+### 必备 CSS 体系（详见 references/html-template.md）
 
-```markdown
-# 题型N｜XXX（约XX分）
+```css
+:root {
+  --bg:#f8f6f1; --card:#fff; --ink:#1a1a2e; --ink-soft:#4a4a6a;
+  --accent:#2d5a8e; --accent-light:#e8f0fa; --accent2:#c0392b; --accent2-light:#fdecea;
+  --green:#27ae60; --green-light:#eafaf1; --orange:#e67e22; --orange-light:#fef5e7;
+  --purple:#6c3483; --purple-light:#f4ecf7; --border:#e0ddd5; --code-bg:#f0ede6;
+}
+```
 
-## 一、必背公式
-（LaTeX 公式块，每条配一句大白话解释"这是什么、什么时候用"）
+### 5 种语义块（配色固定，全篇统一使用）
 
-## 二、做题套路（固定步骤）
-步骤1：……
-步骤2：……
-（编号步骤，傻瓜式，照着做就能拿分）
+| class | 色 | 前缀 | 用途 |
+|-------|----|------|------|
+| `.key` | 绿 | ✅ 核心结论 | 必背的定义、定理、重要结论 |
+| `.tip` | 蓝 | 💡 提示 | 易混辨析、知识串联 |
+| `.warn` | 橙 | ⚠️ 易错点 | 考场常踩的坑 |
+| `.routine` | 紫 | 🎯 解题套路 | 固定编号步骤，照套即可 |
+| `.example-box` | 框线 | 例题 | 含 `.ex-tag` 标签 + `.collapse` 可折叠解答 |
 
-## 三、例题精讲
-【例】题目
-**第1步**：（写出这一步用的公式）
-计算过程……（每步算术都写出来，零基础不跳步）
-**答案**：……
+### 章节骨架模板（直接复用）
 
-## 四、作业同类题
-这类题 = 第X周作业第Y题（知识库"作业答案"节点里看）
+```html
+<section class="chapter" id="anchor">
+  <h2>📶 章节标题</h2>
 
-## 五、易错警示
-（阅卷得分点、常见丢分写法）
+  <div class="key"><strong>定义：</strong>……</div>
+
+  <h3>小节</h3>
+  <div class="formula-block">
+    <span class="label">公式名</span>
+    $$E = \int_{-\infty}^{\infty}|f(t)|^2 dt$$
+  </div>
+
+  <div class="routine">
+    <p><strong>套路：</strong>对于 ……</p>
+    <ol class="steps">
+      <li>步骤1</li>
+      <li>步骤2</li>
+    </ol>
+  </div>
+
+  <div class="example-box">
+    <span class="ex-tag">例题</span>
+    <p><strong>题目：</strong>……</p>
+    <div class="collapse" onclick="this.classList.toggle('open')">
+      <div class="collapse-head">点击查看解答 <span class="arrow">▶</span></div>
+      <div class="collapse-body">
+        <p>步骤……</p>
+        <div class="key">答案：……</div>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+### 完整讲义骨架（一份标准讲义的目录）
+
+1. **顶栏 topbar**：课程章节名 + 阅读进度（`#progress`）
+2. **侧边栏 sidebar**：分组锚点链接（入门/正文/作业详解/总结）
+3. **🗺️ 学习路线图（必有，放在最前）**：
+   - 与相邻章节对比表（连续 vs 离散，老套路迁移到新题型）
+   - 本章 3 大核心 + 编号步骤
+   - `.tip` 总结重点
+4. **正文**：每个核心概念一节，含公式块 + 对比表 + 解题套路
+5. **作业详解**：每题一个 `<section class="chapter" id="hw-*">`，完整解答 + 折叠展开
+6. **📌 知识图谱与速记**：表格 + `.warn` 易错点列表 + 速记口诀
+
+### <head> 必含
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMath()"></script>
+<script>
+  function renderMath(){
+    renderMathInElement(document.body,{delimiters:[
+      {left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}
+    ]});
+  }
+  window.addEventListener('scroll',()=>{
+    const sc=document.documentElement.scrollTop;
+    const tot=document.documentElement.scrollHeight-window.innerHeight;
+    const pct=tot>0?Math.min(100,Math.round(sc/tot*100)):0;
+    const el=document.getElementById('progress');
+    if(el)el.textContent='阅读进度 '+pct+'%';
+  });
+</script>
 ```
 
 ### 写作硬性要求
 
-- 用户自称零基础时，**每一步算术都展开**（复数取模、通分、指数运算都要写），宁多勿少。
-- 例题优先取自作业题（有官方答案可对照），其次教材典型题；样卷是扫描件读不了就用前者并如实告知。
-- 公式一律用 `$...$` / `$$...$$` LaTeX，飞书导入会自动转成公式块。
-- **表格单元格内的公式不要用竖线 `|`**（如求值记号 `\big|_{s=jω}`），必须写成 `\vert`，否则 Markdown 表格列被截断。
+- 公式一律 `$$...$$`（行间）或 `$...$`（行内），KaTeX 自动渲染。
+- 用户自称零基础时**每一步算术都展开**（复数取模、通分、指数运算都要写）。
+- 例题优先取自作业题（有官方答案可对照），其次教材典型题。
+- 折叠答案用 `<div class="collapse" onclick="this.classList.toggle('open')">`，避免把答案直接露出。
 
-### 画图题标准答案图（强烈推荐）
+### 离线化（推荐，做完 HTML 后做一次）
 
-频谱图/幅频曲线/波形图类题目，纯文字讲不透——**用 matplotlib 直接生成标准答案图**并插入飞书文档：
+考试环境可能无网。把外部 KaTeX 资源内联 + 图片转 base64，让 HTML 单文件完全离线可用：
 
-1. 从样卷解答中提取每道画图题的解析式（频谱=stem图，幅频曲线=plot+关键点标注）。
-2. 生成 PNG（150dpi，中文字体 `Microsoft YaHei`；**注意下标字符如 ₄/₀ 在雅黑里缺字**，写成普通数字）。
-3. 插入：`lark-cli docs +media-insert --as user --doc <obj_token> --file <png> --type image --caption "图N｜说明" --width 600`（只能追加到文档末尾，图集章节放文档尾部）。
-4. 典型图代码要点：频谱图用 `ax.stem`+逐点 `annotate` 数值；幅频曲线标 3 个关键点（起点/极值/终点）。
+1. 下载 KaTeX 的 `katex.min.css` / `katex.min.js` / `auto-render.min.js` 本地化（或用 `<link>` + `<script>` 在线，浏览器会缓存）。
+2. matplotlib 输出的 PNG → base64 → `<img src="data:image/png;base64,...">` 内联。
+3. 保存为 `讲义_离线版.html`，自包含、可邮件发送、可刻U盘。
+
+### 画图题配图（强烈推荐）
+
+频谱图 / 幅频曲线 / 波形图——纯文字讲不透，必须配图。**HTML 用 base64 内联**：
+
+```python
+import base64, matplotlib.pyplot as plt
+plt.savefig('tmp.png', dpi=150)
+b64 = base64.b64encode(open('tmp.png','rb').read()).decode()
+html_img = f'<img src="data:image/png;base64,{b64}" alt="..." style="max-width:100%;border:1px solid var(--border);border-radius:6px;">'
+```
+
+写入 HTML 后用浏览器打开是单文件，离线也好用。**关键技巧**：150dpi，中文字体 `'Microsoft YaHei'`；unicode 下标（₄₀等）在雅黑里缺字，图里用普通数字 `4/0`；频谱图 `ax.stem` + 逐点 `annotate` 数值；幅频曲线标 3 个关键点（起点/极值/终点）。
 
 ### 补充资料的处理方式（按格式分流）
 
 | 资料格式 | 处理方式 |
 |---|---|
-| 学长/同学的 md 笔记（含 LaTeX） | `drive +import` 直接导入，公式渲染完好，归入📚分区 |
-| HTML 讲义（其他AI/工具产物） | 写转换器提为 md（保留 h1-h4/表格/公式块class语义→引用块）再 import；或当原始文件上传 |
-| PDF/PPT 原件 | `drive +upload --wiki-token` 上传原件到📎分区，不做转换 |
-| HTML 转换器要点 | 表格先正则提 `<tr>/<td>` 转管道表；`class="formula/tip/warning/answer"` 的 div 转 `> 📐/💡/⚠️/✅` 引用块；h1-h4 映射 ##~##### |
+| 学长/同学的 HTML 讲义 | **直接重写为统一标准的 HTML**（参考本模板的 CSS+class 体系），融合到讲义合集 |
+| HTML 讲义（其他AI/工具产物） | 直接打开人工重写为标准模板 |
+| PDF/PPT/扫描版原文件 | **不转换**，单独上传飞书/网盘作为参考资料，标注链接进 HTML 讲义目录 |
 
-## 第四阶段：搭建飞书知识库
+## 第四阶段：交付（HTML 上传到飞书作为附件）
 
-前置：`lark-cli auth status` 确认已登录。详细命令见 `references/lark-cli-cheatsheet.md`。
+如需把讲义分享给同学（飞书作为最终共享渠道）：
 
-流程（串行执行，每步之间 sleep 1 防限流）：
-
-1. 创建知识空间：`lark-cli wiki +space-create --as user --name "<课程名>·考前速通80+"`
-2. 逐篇导入讲义：`lark-cli drive +import --as user --type docx --file <md> --name <标题>` 得到 token，再 `lark-cli wiki +move --as user --obj-type docx --obj-token <tok> --target-space-id <space>` 挪入库
-3. 创建容器节点放样卷扫描图，`lark-cli drive +upload --wiki-token <节点>` 传图
-4. 作业 docx **直接上传原文件**（见下方"已知坑"），不要用 import
-5. 开放分享：先 `lark-cli wiki spaces get` 看 `open_sharing`；若未开，尝试 `lark-cli api PUT /open-apis/wiki/v2/spaces/<id>/setting`，仍不行则指引用户在飞书界面开（知识库设置→开启公开分享）
-6. `lark-cli wiki +node-list` 检查结构，用 `lark-cli wiki +node-get` 拿首页 URL 交付
+1. **本地交付**：HTML 文件存到 `.workbuddy/wiki_html/`，用户直接双击打开；也可用任意 HTTP 服务器临时托管（`python -m http.server 8000`）。
+2. **飞书附件**：`lark-cli drive +upload --as user --file <html> --name "<讲义>.html"` 上传，云空间直接双击就能在浏览器里打开。
+3. **同一课程多份讲义**：建一个云空间文件夹（如 `/信号与系统速通讲义/`），把全部 HTML 丢进去，发文件夹链接给同学。
 
 ### 已知坑（实战踩过，务必避开）
 
-1. **docx import 丢 Word 公式**：`drive +import` 导入含 OMML 公式的作业 docx 后公式全部丢失（文字在、公式空）。解法：作业答案**上传原 .docx 文件**（`drive +upload`，公式完整可下载）；只有自己写的 markdown 讲义才走 import（md 里的 LaTeX 能正确转公式块）。
-2. **import+move 必产生双份节点**（不是偶发，是每次都双份）：`drive +import` 后 `wiki +move --obj-type docx --obj-token` 进库，节点列表会出现同标题 2 个 node；`drive +upload --wiki-token` 同样双份。**收尾必须去重**：按 parent `node-list` 分组找同标题对，`wiki +node-delete --obj-type wiki`（传 docx 报"节点不存在"）删掉一份。含插入图片的文档要保留 obj_token 与 import 返回值一致的那份。
-3. **先小规模试跑**：先导入 1 篇讲义 → `docs +fetch --doc-format markdown` 抽查公式渲染 → 确认无误再批量。发现问题（如表格竖线）先改源 md 重新导。
-4. **删除测试文档**：`drive +delete --file-token <tok> --type docx --yes`。
-5. **整篇替换文档内容**：`docs +update --doc <obj_token> --command overwrite --doc-format markdown --content "@<md文件>"`（内容全换、URL 不变）；标题改名走 `lark-cli api PATCH /open-apis/drive/v1/files/<obj_token>`（body 带 title+type，lark-cli 不支持 query string）。
-6. **节点挂到父节点**：`wiki +move --node-token X --target-parent-token Y`（不带 --obj-type/--obj-token，那是 doc→wiki 模式）。
-7. **图片只追加到文档末尾**：`docs +media-insert` 无位置参数，图集章节放文档尾部；`--caption` 写图注。
-8. **matplotlib 中文**：`plt.rcParams['font.sans-serif']=['Microsoft YaHei']`；下标 unicode（₄₀等）缺字，用普通数字。
+1. **KaTeX CDN 在离线环境加载失败**：kaTeX 走 jsdelivr CDN，国内考试机可能无外网。**强烈建议本地化 KaTeX**，或考试前确认网络可用。
+2. **matplotlib 中文缺字**：unicode 下标（₄₀等）在雅黑里缺字，图里和讲义里一律用普通 `4/0`。
+3. **公式块表格内 LaTeX 竖线**：HTML 写 `<td>...</td>` 而不是表格管道 `|`，飞书转换才安全。
+4. **KaTeX 行内公式 `$...$` 和加粗冲突**：行内公式前后用空格隔开避免被吃掉：`**结论是** $E = mc^2$` 不要连写。
+5. **飞书上传 docx 丢公式**：本流程**不做 markdown 转换**，直接传 HTML 文件，无此问题。
+6. **折叠按钮 onclick 在某些环境失效**：搭配 `<a href="#" onclick="...">` 或 `<button>` 形式更稳。
 
 ## 第五阶段：验证与交付
 
