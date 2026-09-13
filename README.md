@@ -40,9 +40,11 @@ git clone https://github.com/ZOUMDA28/hust-exam-speedrun.git ~/.claude/skills/hu
 hust-exam-speedrun/
 ├── SKILL.md                          # 五阶段主流程（调研→决策→写讲义→建知识库→交付）
 ├── references/
+│   ├── html-template.md              # HTML 讲义完整模板（10种语义块CSS + 三种文件骨架）
 │   └── lark-cli-cheatsheet.md        # 飞书命令速查 + 实战踩坑记录
 └── scripts/
     ├── extract_docx_text.py          # 解包 docx 提取正文+公式文字，建题型索引
+    ├── html2md.py                    # HTML 讲义转 Markdown（如需导入飞书知识库）
     └── import_md_to_wiki.sh          # 批量导入讲义进飞书知识库（防限流）
 ```
 
@@ -57,7 +59,13 @@ hust-exam-speedrun/
 
 ## 实战案例
 
-2026 春《信号与线性系统》（管致中第六版）：3 小时内产出 14 篇讲义 + 3 页样卷原图 + 8 份作业答案，建成飞书知识库并开放分享，覆盖卷积/傅里叶/拉普拉斯/z 变换/电路建模等全部 7 大题型。
+### 2026 秋《计算机系统基础》
+
+11 套历年真题，产出 8 篇 HTML 讲义（7 章节 + 综合精讲 + 冲刺计划 + 考前速通），覆盖数据表示/汇编/栈帧/链接/异常五大题型。配套自测题集 20+ 道，全部采用分步解答（.sol-step）+ 知识点标注（.kp）+ 可折叠答案。
+
+### 2026 春《信号与线性系统》
+
+3 小时内产出 14 篇讲义 + 3 页样卷原图 + 8 份作业答案，建成飞书知识库并开放分享，覆盖卷积/傅里叶/拉普拉斯/z 变换/电路建模等全部 7 大题型。（管致中第六版）
 
 ## License
 
